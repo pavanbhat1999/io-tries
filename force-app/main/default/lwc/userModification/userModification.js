@@ -199,7 +199,7 @@ connectedCallback() {
             console.log('queues first for = '+this.queuesId[i]);
             userfetch({Id :this.queuesId[i]}).then(
                 (data) => {
-                    console.log('Data from Apex = '+Json.stringify(data));
+                    console.log('Data from Apex = '+JSON.stringify(data));
                 }
             )
             

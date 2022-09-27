@@ -24,6 +24,7 @@ export default class UserModification extends LightningElement {
     removeAllUserChecked;
     queues = new Set();
     queuesId = [];
+    userListjson;
     showQueuesSelected=false;
     queueUserJson = [
         {'QName':'q1',
@@ -200,11 +201,14 @@ connectedCallback() {
             userfetch({Id :this.queuesId[i]}).then(
                 (data) => {
                     console.log('Data from Apex = '+JSON.stringify(data));
+                    this.userListjson = data;
                 }
             )
             
             
         }
+        console.log('type of data'+typeof this.userListjson);
+        console.log('data = '+this.userListjson);
         this.showQueuesSelected = true;
     }
 

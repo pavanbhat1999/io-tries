@@ -43,7 +43,15 @@
             </div> 
         </template>
         <lightning-button variant="brand" label="Show All Queues Selected" title="Primary action"  onclick={queueShow} class="slds-m-left_x-small"></lightning-button>
-
+        <template if:true={showQueuesSelected}>
+            <template for:each={userListjson} for:item="uj">
+                <lightning-layout multiple-rows key={uj}>
+                    {uj.Name} - <b>{uj.Qname}</b>
+                </lightning-layout>
+                
+            </template>
+            
+        </template>
         <template if:true={showQueuesSelected}>
             <p> All Users from below queues will be removed </p>
                 <template for:each={queues} for:item="q">

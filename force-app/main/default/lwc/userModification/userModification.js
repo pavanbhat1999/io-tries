@@ -161,6 +161,8 @@ connectedCallback() {
         }
         //
     handleClickChange(event){
+        if(!this.userListjson)
+        this.userListjson.splice(0,this.userListjson.length);
         console.log('Any checkbox clicked');
         console.log("Data from Lwc name = "+event.target.dataset.name);
         console.log("Data from Lwc id = "+event.target.dataset.id);
@@ -196,19 +198,40 @@ connectedCallback() {
         console.log('show clicked');
         console.log('selected queues name = '+Array.from(this.queues));
         console.log('Id of selected queues = '+this.queuesId);
-        for( var i = 0; i < this.queuesId.length; i++){ 
-            console.log('queues first for = '+this.queuesId[i]);
-            userfetch({Id :this.queuesId[i]}).then(
-                (data) => {
-                    console.log('Data from Apex = '+JSON.stringify(data));
-                    this.userListjson = data;
-                }
-            )
-            
+        const fetchdata = async (i,q,qname) => {
+            const res = await userfetch({Id :this.queuesId[i]});
+            console.log('Result = '+JSON.stringify(res));
+            let newres = [];
+            for(var j=0;j<res.length;j++)
+            newres.push({'Name':res[j].Name,'Qid':q,'Qname':qname});
+           // this.queueUserJson.push({'Qname':event.target.dataset.name,'Qid':event.target.dataset.id});
+            if(!this.userListjson)
+            this.userListjson = newres;
+            else
+            this.userListjson = this.userListjson.concat(newres);
+            console.log('Id of selected queues in for = '+q);
+            console.log('in for await = '+i);
             
         }
-        console.log('type of data'+typeof this.userListjson);
-        console.log('data = '+this.userListjson);
+        for( var i = 0; i < this.queuesId.length; i++){ 
+        console.log('queues first for = '+this.queuesId[i]);
+       
+        
+        fetchdata(i,this.queuesId[i],Array.from(this.queues)[i]);
+        console.log('type of data'+JSON.stringify(this.userListjson));
+        
+            // userfetch({Id :this.queuesId[i]}).then(
+            //     (data) => {
+            //         console.log('Data from Apex = '+JSON.stringify(data));
+            //         this.userListjson.push(data);
+            //         console.log('data = '+JSON.stringify(this.userListjson));
+            //     }
+                
+            // )
+            
+        }
+        
+        
         this.showQueuesSelected = true;
     }
 

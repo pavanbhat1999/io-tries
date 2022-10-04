@@ -46,23 +46,28 @@
         <template if:true={showQueuesSelected}>
             <template for:each={userListjson} for:item="uj">
                 <lightning-layout multiple-rows key={uj}>
-                    {uj.Name} - <b>{uj.Qname}</b>
+                    <p style="padding: 0 10%;margin: 0 auto"> {uj.Name} - <b>{uj.Qname}</b> </p>
+                    
                 </lightning-layout>
                 
             </template>
             
         </template>
+        <hr>
         <template if:true={showQueuesSelected}>
+            <div
+                        class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+
             <p> All Users from below queues will be removed </p>
                 <template for:each={queues} for:item="q">
                 <lightning-layout multiple-rows key={q}>
              
-                        <p> {q} </p>
+                        <p style="padding: 0 10%;margin: 0 auto"> {q} </p>
                 
                 </lightning-layout>
             </template>
-            <lightning-button variant="brand" label="Remove All Users from slected Queue" title="Primary action"  onclick={submitRemoveUser} class="slds-m-left_x-small"></lightning-button>
-
+            <lightning-button style="padding: 0 10%;margin: 0 auto" variant="brand" label="Remove All Users from slected Queue" title="Primary action"  onclick={submitRemoveUser} class="slds-m-left_x-small"></lightning-button>
+        </div>
         </template>
 
         <hr>
@@ -102,15 +107,23 @@
 
                         <lightning-card>
                             <p>Selected User : <b>{selectedUserName}</b></p>
-                            <p>Queue Memberships of the User :</p>
+                            <p>Queue and Public group Memberships of the User :</p>
                                 <template for:each={userQueueList} for:item="uq">
                                     <lightning-layout multiple-rows key={uq}>
                                        
                                             <p style="text-align: center;margin:0 auto">{uq.Group.Name}</p>
                                         
                                     </lightning-layout>
-                                </template>
+                                    </template>
                                 <hr>
+                                <p>Permission Sets of the User :</p>
+                                <template for:each={pslist} for:item="ps">
+                                    <lightning-layout multiple-rows key={ps}>
+                                       
+                                            <p style="text-align: center;margin:0 auto">{ps.PermissionSet.Name}</p>
+                                        
+                                    </lightning-layout>
+                                    </template>
                                 <lightning-input label="Search for the Queue to be added" value={searchName} onchange={searchQueue}></lightning-input> <br/>
                                 <template if:true={queueList}>
                                     <div class="slds-grid slds-wrap">

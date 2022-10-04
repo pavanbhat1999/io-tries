@@ -9,6 +9,8 @@ import AllUserFetch from '@salesforce/apex/AllUserFetch.getUsers';
 import queuefetch_from_user from '@salesforce/apex/queuefetch_from_user.getQueueFromUser';
 import deleteAllQueueUser from '@salesforce/apex/deleteAllQueueUser.deleteUser';
 import insertUserQueue from '@salesforce/apex/insertUserQueue.insertUser';
+import getps from '@salesforce/apex/UserPS.getPS';
+
 
 export default class UserModification extends LightningElement {
 // all variables
@@ -45,6 +47,7 @@ export default class UserModification extends LightningElement {
     searchUserName;
     queueList2;
     queues2 = new Set();
+    pslist;
 // get data initial startup
 connectedCallback() {
     
@@ -161,8 +164,6 @@ connectedCallback() {
         }
         //
     handleClickChange(event){
-        if(!this.userListjson)
-        this.userListjson.splice(0,this.userListjson.length);
         console.log('Any checkbox clicked');
         console.log("Data from Lwc name = "+event.target.dataset.name);
         console.log("Data from Lwc id = "+event.target.dataset.id);
@@ -174,12 +175,16 @@ connectedCallback() {
         //console.log("sample json = "+JSON.stringify(this.queueUserJson));
         if(event.target.checked){
             this.showQueuesSelected = false;
+            if(this.userListjson)
+            this.userListjson.length = 0;
             this.queues.add(event.target.dataset.name);
             this.queuesId.push(event.target.dataset.id);
 
         }
         if(!event.target.checked){
             this.showQueuesSelected = false;
+            if(this.userListjson)
+            this.userListjson.length = 0;
             this.queues.delete(event.target.dataset.name);
             for( var i = 0; i < this.queuesId.length; i++){ 
                                        
@@ -239,7 +244,7 @@ connectedCallback() {
 
 
     userShowSelectedQueue(event){
-        console.log("Data from Lwc = "+event.target.dataset.id);
+       console.log("Data from Lwc = "+event.target.dataset.id);
         this.Id = event.target.dataset.id;
         this.queueName=event.target.dataset.name;
         userfetch({Id : this.Id}).then(
@@ -247,6 +252,7 @@ connectedCallback() {
            this.userList = data; 
            console.log(this.userList);
             });
+        console.log("Data from Lwc = "+event.target.dataset.id);
           
     }
     clickUser(event){
@@ -258,6 +264,12 @@ connectedCallback() {
             (data) => {
                 this.userQueueList = data;
                 console.log(this.userQueueList);
+            }
+        )
+        getps({'usernameps':this.selectedUserName}).then(
+            (data) => {
+                console.log(data);
+                this.pslist = data;
             }
         )
     }

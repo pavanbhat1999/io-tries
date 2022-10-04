@@ -1,9 +1,8 @@
 import { LightningElement,wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
-
-
+// Fetch Data from apex using LDS
 import getQueus from '@salesforce/apex/queueFetch.getQueues';
-import getAllQueus from '@salesforce/apex/queueAllFetch.getAllQueues';
+//import getAllQueus from '@salesforce/apex/queueAllFetch.getAllQueues';
 import userfetch from '@salesforce/apex/UserFetch.getUserName';
 import AllUserFetch from '@salesforce/apex/AllUserFetch.getUsers';
 import queuefetch_from_user from '@salesforce/apex/queuefetch_from_user.getQueueFromUser';
@@ -13,7 +12,7 @@ import getps from '@salesforce/apex/UserPS.getPS';
 
 
 export default class UserModification extends LightningElement {
-// all variables
+// Variables required for PART 1 
     Id;
     searchName;
     queueList;
@@ -28,29 +27,13 @@ export default class UserModification extends LightningElement {
     queuesId = [];
     userListjson;
     showQueuesSelected=false;
-    queueUserJson = [
-        {'QName':'q1',
-        'Qid':'021323',
-        'Users':["j","k"]},
-    ]
-
-    // for( var i = 0; i < this.queuesId.length; i++){ 
-    //     userfetch({Id : queuesId[i]}).then(
-    //         (data) => {
-    //        queueUserJson.push({'QName':'q1',
-    //        'Qid':'021323',
-    //        'Users[Names].push({'data.name'})]}})
-    //         });                        
-       
-    // }
     // PART 2 Variables
     searchUserName;
     queueList2;
     queues2 = new Set();
     pslist;
-// get data initial startup
+// Initial data load Method 1 - Using Connected Callback
 connectedCallback() {
-    
         getQueus({Name : ''}).then(
             (data) => {
            this.queueList = data; 

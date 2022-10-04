@@ -219,32 +219,37 @@ connectedCallback()
         this.showQueuesSelected = true;
     }
 
+    // FIXME: Remove this not required now - [ Used for showing the data on top onclick remove user]
+    userShowSelectedQueue(event){
+        console.log("Data from Lwc = "+event.target.dataset.id);
+         this.Id = event.target.dataset.id;
+         this.queueName=event.target.dataset.name;
+         userfetch({Id : this.Id}).then(
+             (data) => {
+            this.userList = data; 
+            console.log(this.userList);
+             });
+         console.log("Data from Lwc = "+event.target.dataset.id);
+           
+     }
 //TODO: Part 2---------------------------------------------------------------
 
 
-    userShowSelectedQueue(event){
-       console.log("Data from Lwc = "+event.target.dataset.id);
-        this.Id = event.target.dataset.id;
-        this.queueName=event.target.dataset.name;
-        userfetch({Id : this.Id}).then(
-            (data) => {
-           this.userList = data; 
-           console.log(this.userList);
-            });
-        console.log("Data from Lwc = "+event.target.dataset.id);
-          
-    }
+// Onclick for User Selection 
     clickUser(event){
         console.log("Data from Lwc name = "+event.target.dataset.name);
         console.log("Data from Lwc id = "+event.target.dataset.id);
         this.selectedUserName = event.target.dataset.name;
         this.selectedUserId = event.target.dataset.id;
+        // fetch data of the user slected 
+        // 1. queues and public groups APEX
         queuefetch_from_user({Id : this.selectedUserId}).then(
             (data) => {
                 this.userQueueList = data;
                 console.log(this.userQueueList);
             }
         )
+        // 2. permission sets assigned to the user APEX
         getps({'usernameps':this.selectedUserName}).then(
             (data) => {
                 console.log(data);
@@ -252,6 +257,7 @@ connectedCallback()
             }
         )
     }
+// onchange event for new queues selected
     handleClickChange2(event){
         console.log('Any checkbox clicked');
         console.log("Data from Lwc name = "+event.target.dataset.name);
@@ -259,23 +265,25 @@ connectedCallback()
         console.log('checkbox value = '+event.target.checked);
         if(event.target.checked){
             this.queues2.add(event.target.dataset.id);
-          
-          
         }
         if(!event.target.checked){
             this.queues2.delete(event.target.dataset.id);
-           
         }
     }
-    handleClick(event){
+// Onclick function for submitting the slected queues for the selected user
+//TODO: add multiple queus addition 
+    handleClickAddToQueues(event){
         console.log('This is the queue added = '+Array.from(this.queues2)+'selected user Id = '+this.selectedUserId);
         let queueId = Array.from(this.queues2);
+        // insert selected queues APEX
         insertUserQueue({Qname:queueId[0],UserId:this.selectedUserId}).then(
             (data) => {
                 this.showToast('Success','Addition of user to queue successful');
                 location.reload()
             });
     }
+//TODO: Add Permission Set addition
+
 
 
 }

@@ -276,7 +276,7 @@ connectedCallback()
         console.log('This is the queue added = '+Array.from(this.queues2)+'selected user Id = '+this.selectedUserId);
         let queueId = Array.from(this.queues2);
         // insert selected queues APEX
-        insertUserQueue({Qname:queueId[0],UserId:this.selectedUserId}).then(
+        insertUserQueue({QueueId:queueId,UserId:this.selectedUserId}).then(
             (data) => {
                 this.showToast('Success','Addition of user to queue successful');
                 location.reload()

@@ -35,20 +35,20 @@ pslist;
 // Initial data load [ Method 1 - Using Connected Callback ]
 connectedCallback() 
 {
-    // Get data of all the queus present in the org
+    // Get data of all the queus present in the org APEX
     getQueus({Name : ''}).then(
         (data) => {
             this.queueList = data; 
             console.log(this.queueList);
         });
-    // Get data of all the users in org
+    // Get data of all the users in org APEX
     allUserFetch({UserName : ''}).then(
         (data) => {
             console.log(data);
             this.allUser = data;
         });
 }
-//FIXME: Initial data load [ Method 2 - Using Wired methods ]
+//FIXME: Initial data load [ Method 2 - Using Wired methods ] APEX
 //     @wire(getQueus,{Name:''}) wiredQueues({ error, data }) {
 //     if (data) {
 //         this.queueList = data;
@@ -70,9 +70,9 @@ connectedCallback()
 // }
 //---------------------------------------------------------------------------------------------
 // onchange event for queue search
-searchQueue(event) { 
-    this.searchQueueName = event.target.value; 
-    this.showQueus();
+    searchQueue(event) { 
+        this.searchQueueName = event.target.value; 
+        this.showQueus();
     }
 // onchange for user search
     searchUser(event){
@@ -105,7 +105,6 @@ searchQueue(event) {
 
     }
 //TODO: All functions for Part 1---------------------------------------------------------------
-        // Submit button for removal of users
         showToast(title, message) {
             const event = new ShowToastEvent({
                 title: title,
@@ -114,6 +113,7 @@ searchQueue(event) {
             });
             this.dispatchEvent(event);
         }
+// Submit button for removal of users from selected queues
         submitRemoveUser(){
             console.log('submit pressed');
             console.log(this.queueName);
@@ -135,7 +135,7 @@ searchQueue(event) {
             // }
             console.log(this.queues);
             console.log(Array.from(this.queues));
-            // Delete all the users from selected queue
+            // Delete all the users from selected queue using APEX
             deleteAllQueueUser({Names : Array.from(this.queues)}).then(
                 (data) => {
                     console.log('delete succesfull');
@@ -144,54 +144,53 @@ searchQueue(event) {
                 } 
             )
         }
-        //
-    handleClickChange(event){
-        console.log('Any checkbox clicked');
-        console.log("Data from Lwc name = "+event.target.dataset.name);
-        console.log("Data from Lwc id = "+event.target.dataset.id);
-        console.log('checkbox value = '+event.target.checked);
-        //this.queueUserJson.push({'Qname':event.target.dataset.name,'Qid':event.target.dataset.id});
-        //console.log("sample json = "+JSON.stringify(this.queueUserJson));
-        //console.log("sample json = "+this.queueUserJson);
-        //this.queueUserJson = Array.from(this.queueUserJson);
-        //console.log("sample json = "+JSON.stringify(this.queueUserJson));
-        if(event.target.checked){
+// Initial Conditions for checkbox selection and unselection
+        handleClickInit(){
+            // hide queues selected
             this.showQueuesSelected = false;
+            //Empty the userlist when status of checkbox changes
             if(this.userListjson)
             this.userListjson.length = 0;
-            this.queues.add(event.target.dataset.name);
-            this.queuesId.push(event.target.dataset.id);
 
         }
-        if(!event.target.checked){
-            this.showQueuesSelected = false;
-            if(this.userListjson)
-            this.userListjson.length = 0;
-            this.queues.delete(event.target.dataset.name);
-            for( var i = 0; i < this.queuesId.length; i++){ 
-                                       
-                if ( this.queuesId[i] === event.target.dataset.id) { 
-                    this.queuesId.splice(i, 1); 
-                    i--; 
+// Onchange event for checkboxex for add/delete queus form LIST
+        handleClickChange(event){
+            console.log('Any checkbox clicked');
+            console.log("Data from Lwc name = "+event.target.dataset.name);
+            console.log("Data from Lwc id = "+event.target.dataset.id);
+            console.log('checkbox value = '+event.target.checked);
+            if(event.target.checked){
+                this.handleClickInit();
+                // push the selected queuename and id into 2 Lists
+                this.queues.add(event.target.dataset.name);
+                this.queuesId.push(event.target.dataset.id);
+
+            }
+            if(!event.target.checked){
+                this.handleClickInit();
+                // pop the unselected queuename and id from 2 Lists
+                this.queues.delete(event.target.dataset.name);
+                for( var i = 0; i < this.queuesId.length; i++){ 
+                                        
+                    if ( this.queuesId[i] === event.target.dataset.id) { 
+                        this.queuesId.splice(i, 1); 
+                        i--; 
+                    }
                 }
             }
-        
-    
-    
-    
-        }
     }
+// Show Users in Queue button on click function
     queueShow(){
         console.log('show clicked');
         console.log('selected queues name = '+Array.from(this.queues));
         console.log('Id of selected queues = '+this.queuesId);
+        // fetchdata from 2 Lists and put into single json for display
         const fetchdata = async (i,q,qname) => {
             const res = await userfetch({Id :this.queuesId[i]});
             console.log('Result = '+JSON.stringify(res));
             let newres = [];
             for(var j=0;j<res.length;j++)
             newres.push({'Name':res[j].Name,'Qid':q,'Qname':qname});
-           // this.queueUserJson.push({'Qname':event.target.dataset.name,'Qid':event.target.dataset.id});
             if(!this.userListjson)
             this.userListjson = newres;
             else
@@ -200,11 +199,11 @@ searchQueue(event) {
             console.log('in for await = '+i);
             
         }
+        //TODO:Important start of loop to get data from each queue
         for( var i = 0; i < this.queuesId.length; i++){ 
         console.log('queues first for = '+this.queuesId[i]);
-       
-        
         fetchdata(i,this.queuesId[i],Array.from(this.queues)[i]);
+        // Got all data user+membership in userListJson
         console.log('type of data'+JSON.stringify(this.userListjson));
         
             // userfetch({Id :this.queuesId[i]}).then(
@@ -217,8 +216,6 @@ searchQueue(event) {
             // )
             
         }
-        
-        
         this.showQueuesSelected = true;
     }
 
@@ -260,11 +257,6 @@ searchQueue(event) {
         console.log("Data from Lwc name = "+event.target.dataset.name);
         console.log("Data from Lwc id = "+event.target.dataset.id);
         console.log('checkbox value = '+event.target.checked);
-        //this.queueUserJson.push({'Qname':event.target.dataset.name,'Qid':event.target.dataset.id});
-        //console.log("sample json = "+JSON.stringify(this.queueUserJson));
-        //console.log("sample json = "+this.queueUserJson);
-        //this.queueUserJson = Array.from(this.queueUserJson);
-        //console.log("sample json = "+JSON.stringify(this.queueUserJson));
         if(event.target.checked){
             this.queues2.add(event.target.dataset.id);
           

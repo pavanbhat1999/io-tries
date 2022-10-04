@@ -2,9 +2,9 @@ import { LightningElement,wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 // Fetch Data from apex using LDS
 import getQueus from '@salesforce/apex/queueFetch.getQueues';
-//import getAllQueus from '@salesforce/apex/queueAllFetch.getAllQueues';
+//import getAllQueus from '@salesforce/apex/qsearchNameueueAllFetch.getAllQueues';
 import userfetch from '@salesforce/apex/UserFetch.getUserName';
-import AllUserFetch from '@salesforce/apex/AllUserFetch.getUsers';
+import allUserFetch from '@salesforce/apex/AllUserFetch.getUsers';
 import queuefetch_from_user from '@salesforce/apex/queuefetch_from_user.getQueueFromUser';
 import deleteAllQueueUser from '@salesforce/apex/deleteAllQueueUser.deleteUser';
 import insertUserQueue from '@salesforce/apex/insertUserQueue.insertUser';
@@ -13,40 +13,42 @@ import getps from '@salesforce/apex/UserPS.getPS';
 
 export default class UserModification extends LightningElement {
 // Variables required for PART 1 
-    Id;
-    searchName;
-    queueList;
-    userList;
-    queueName;
-    allUser;
-    selectedUserName;
-    selectedUserId;
-    userQueueList;
-    removeAllUserChecked;
-    queues = new Set();
-    queuesId = [];
-    userListjson;
-    showQueuesSelected=false;
-    // PART 2 Variables
-    searchUserName;
-    queueList2;
-    queues2 = new Set();
-    pslist;
-// Initial data load Method 1 - Using Connected Callback
-connectedCallback() {
-        getQueus({Name : ''}).then(
-            (data) => {
-           this.queueList = data; 
-           console.log(this.queueList);
-            });
-
-        AllUserFetch({UserName : ''}).then(
-                (data) => {
-                    console.log(data);
-                    this.allUser = data;
-                }
-            );
+Id;
+searchQueueName;
+queueList;
+userList;
+queueName;
+allUser;
+selectedUserName;
+selectedUserId;
+userQueueList;
+removeAllUserChecked;
+queues = new Set();
+queuesId = [];
+userListjson;
+showQueuesSelected=false;
+// PART 2 Variables
+searchUserName;
+queueList2;
+queues2 = new Set();
+pslist;
+// Initial data load [ Method 1 - Using Connected Callback ]
+connectedCallback() 
+{
+    // Get data of all the queus present in the org
+    getQueus({Name : ''}).then(
+        (data) => {
+            this.queueList = data; 
+            console.log(this.queueList);
+        });
+    // Get data of all the users in org
+    allUserFetch({UserName : ''}).then(
+        (data) => {
+            console.log(data);
+            this.allUser = data;
+        });
 }
+//FIXME: Initial data load [ Method 2 - Using Wired methods ]
 //     @wire(getQueus,{Name:''}) wiredQueues({ error, data }) {
 //     if (data) {
 //         this.queueList = data;
@@ -57,24 +59,21 @@ connectedCallback() {
 //     }
 // }
 
-    // @wire(AllUserFetch,{Name:''}) wiredUsers({error,data}){
-    //     if(data){
-    //         this.allUser = data;
-    //         console.log(data);
-    //     }
-    //     else if(error){
-    //         this.error = error;
-    //     }
-    // }
-
-    
+// @wire(allUserFetch,{Name:''}) wiredUsers({error,data}){
+//     if(data){
+//         this.allUser = data;
+//         console.log(data);
+//     }
+//     else if(error){
+//         this.error = error;
+//     }
+// }
+//---------------------------------------------------------------------------------------------
 // onchange event for queue search
-    searchQueue(event) { 
- 
-            this.searchName = event.target.value; 
-            this.showQueus();
-     
-    }
+searchQueue(event) { 
+    this.searchQueueName = event.target.value; 
+    this.showQueus();
+    }
 // onchange for user search
     searchUser(event){
         console.log('search changing = '+event.target.value);
@@ -88,7 +87,7 @@ connectedCallback() {
 //show users dynamically 
     showUser(){
         console.log('search User Name = '+this.searchUserName);
-        AllUserFetch({UserName: this.searchUserName}).then(
+        allUserFetch({UserName: this.searchUserName}).then(
             (data)=> {
                 console.log(data);
                 this.allUser = data;
@@ -97,7 +96,7 @@ connectedCallback() {
     }
 // showing queues dynamically
     showQueus(){
-        getQueus({Name : this.searchName}).then(
+        getQueus({Name : this.searchQueueName}).then(
             (data) => {
            this.queueList = data; 
            console.log(this.queueList);

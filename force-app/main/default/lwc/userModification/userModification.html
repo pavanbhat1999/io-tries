@@ -1,0 +1,162 @@
+<template>
+    <!-- TODO: This is for deployment activities PART1 -->
+    <lightning-card>
+        <h1> This is the User Queue and Public Group Removal </h1>
+        <lightning-input label="Search Queue" value={searchName} onchange={searchQueue}></lightning-input> <br/>
+
+        <template if:true={userList}>
+            <div>
+                <p>Latest Selected Queue is </p>
+                <p style="color:blue"> {queueName} </p>
+            </div>
+            <p> Users in the queue selected are : </p>
+            <template for:each={userList} for:item="u">
+                <lightning-layout multiple-rows key={u}>
+             
+                        <lightning-input type="checkbox" label={u.Name}> </lightning-input>
+                
+                </lightning-layout>
+            </template>
+
+        </template>
+        <template if:true={queueList}>
+            <div class="slds-grid slds-wrap">
+                <template for:each={queueList} for:item="q">
+
+                    <lightning-layout multiple-rows key={q}>
+
+                        <div
+                            class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+
+                            <lightning-card title={q.Name}>
+                                <lightning-input data-id={q.Id} data-name={q.Name} class="removeall" type="checkbox" label="Select For Removal" onclick={userShowSelectedQueue} onchange={handleClickChange}> </lightning-input>
+                                <br>
+                              
+                                    <!-- <p  data-id={q.Id} data-name={q.Name} onclick={userShowSelectedQueue}> Click to see Users </p> -->
+
+                            </lightning-card>
+                        </div>
+
+                    </lightning-layout>
+
+                </template>
+            </div> 
+        </template>
+        <lightning-button variant="brand" label="Show All Queues Selected" title="Primary action"  onclick={queueShow} class="slds-m-left_x-small"></lightning-button>
+        <template if:true={showQueuesSelected}>
+            <template for:each={userListjson} for:item="uj">
+                <lightning-layout multiple-rows key={uj}>
+                    <p style="padding: 0 10%;margin: 0 auto"> {uj.Name} - <b>{uj.Qname}</b> </p>
+                    
+                </lightning-layout>
+                
+            </template>
+            
+        </template>
+        <hr>
+        <template if:true={showQueuesSelected}>
+            <div
+                        class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+
+            <p> All Users from below queues will be removed </p>
+                <template for:each={queues} for:item="q">
+                <lightning-layout multiple-rows key={q}>
+             
+                        <p style="padding: 0 10%;margin: 0 auto"> {q} </p>
+                
+                </lightning-layout>
+            </template>
+            <lightning-button style="padding: 0 10%;margin: 0 auto" variant="brand" label="Remove All Users from slected Queue" title="Primary action"  onclick={submitRemoveUser} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        </template>
+
+        <hr>
+       
+
+
+<!-- TODO:PART 2    Make this for novoaccess -->
+
+        <template if:true={allUser}>
+            <h1>User search for novoaccess</h1>
+            <lightning-input label="Search User" value={searchUserName} onchange={searchUser}  ></lightning-input> <br/>
+
+            <div class="slds-grid slds-wrap">
+               
+                    <template for:each={allUser} for:item="u">
+    
+                        <lightning-layout multiple-rows key={u}>
+                            <div
+                            class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+
+                                <lightning-card data-id={u.Id}  data-name={u.Name} title={u.Name} onclick={clickUser}></lightning-card>
+                            </div>
+                            
+                        </lightning-layout>
+                    </template>
+            </div>
+         
+        </template>
+        <div>
+            <template if:true={selectedUserName}>
+                
+                <div>
+                    
+                    <template if:true={userQueueList}>
+                        <div
+                        class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+
+                        <lightning-card>
+                            <p>Selected User : <b>{selectedUserName}</b></p>
+                            <p>Queue and Public group Memberships of the User :</p>
+                                <template for:each={userQueueList} for:item="uq">
+                                    <lightning-layout multiple-rows key={uq}>
+                                       
+                                            <p style="text-align: center;margin:0 auto">{uq.Group.Name}</p>
+                                        
+                                    </lightning-layout>
+                                    </template>
+                                <hr>
+                                <p>Permission Sets of the User :</p>
+                                <template for:each={pslist} for:item="ps">
+                                    <lightning-layout multiple-rows key={ps}>
+                                       
+                                            <p style="text-align: center;margin:0 auto">{ps.PermissionSet.Name}</p>
+                                        
+                                    </lightning-layout>
+                                    </template>
+                                <lightning-input label="Search for the Queue to be added" value={searchName} onchange={searchQueue}></lightning-input> <br/>
+                                <template if:true={queueList}>
+                                    <div class="slds-grid slds-wrap">
+                                        <template for:each={queueList} for:item="q">
+                        
+                                            <lightning-layout multiple-rows key={q}>
+                        
+                                                <div
+                                                    class="slds-col slds-size_3-of-3 slds-theme_shade myslds-box slds-box slds-box_x-small slds-text-align_center slds-var-m-around_x-small">
+                        
+                                                    <lightning-card title={q.Name}>
+                                                        <lightning-input data-id={q.Id} data-name={q.Name} class="adduser" type="checkbox" label="Add User to Queue" onchange={handleClickChange2}> </lightning-input>
+                                                        <br>
+                                                      
+                                                            
+                                                      
+                        
+                                                    </lightning-card>
+                                                </div>
+                        
+                                            </lightning-layout>
+                        
+                                        </template>
+                                    </div> 
+                                </template>
+                        </lightning-card>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <lightning-button variant="brand" label="Add User to selected Queues" title="Primary action" onclick={handleClickAddToQueues} class="slds-m-left_x-small"></lightning-button>
+        </div>
+
+    </lightning-card>
+
+</template>

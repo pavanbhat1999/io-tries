@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>send_welcome</name>
+        <label>send welcome</label>
+        <locationX>660</locationX>
+        <locationY>140</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailtemplate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Succesfully created credentials</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <interviewLabel>user create email flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>user create email flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>150</locationX>
+        <locationY>133</locationY>
+        <connector>
+            <targetReference>send_welcome</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <description>welcome mail for new user</description>
+        <name>emailtemplate</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt;Hi {!$Record.FirstName},&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt;Hope You are Doing Well.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt;We have granted access for you in IOCCS application and SSO also enabled for you in Application. I would request you to login through this link&lt;/span&gt;&lt;strong style=&quot;color: rgb(18, 18, 18);&quot;&gt; ioccs-novonordisk.my.salesforce.com&lt;/strong&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt; via SSO.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt;Please refer&amp;nbsp;&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;https://google.com&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(20, 70, 231);&quot;&gt;&lt;strong&gt;IO CCS_User Guide.pdf:&lt;/strong&gt;&lt;/a&gt;&lt;span style=&quot;color: rgb(18, 18, 18);&quot;&gt; Page No:9 How to access IO CCS Application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(18, 18, 18);&quot;&gt;Thanks and Regards,&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(18, 18, 18);&quot;&gt;{!$User.FirstName}&lt;/strong&gt;&lt;/p&gt;</text>
+    </textTemplates>
+</Flow>

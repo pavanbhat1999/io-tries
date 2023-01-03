@@ -1,0 +1,70 @@
+<apex:page standardController="Case">
+  	<script>
+    // var status = '{!Case.Status}';
+    
+    alert("Please Choose Right Case Type before you close the case");
+    console.log("{!$Component.Case.Status}");
+    
+    /*
+    function handler(e){
+ var txt='You clicked on a '+e.target.nodeName+'\n';
+    txt+='The innerHTML is '+e.target.innerHTML+'\n';
+    txt+='The text is '+e.target.textContent+'\n';
+    txt+='The parentNode is '+e.target.parentNode.nodeName+'\n';
+ alert(txt)
+}
+
+document.addEventListener('click',handler,false)
+*/
+    
+    
+    /*
+        window.onload=function()       
+    {        
+        alert("Hello");
+             var mySpans = document.getElementsByTagName('span');
+    console.log(mySpans);
+    };
+    var mySpans = document.getElementsByTagName('span');
+    console.log(mySpans);
+    for(var i=0;i<mySpans.length;i++){
+ console.log('running');
+if(mySpans[i].innerHTML == 'Working'){
+
+var parent = mySpans[i];
+    console.log('working status found');
+    
+break;
+
+}
+        else{
+            console.log('not found');
+            }
+
+}
+*/
+    
+     /*
+function getElementByXpath(path) {
+  return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+     
+    
+    function getStatus(data){
+        //alert(data.value);
+        if (data.value == "Closed"){
+        confirm('Are you sure you want to close the case check the type before you close');
+            }
+        }
+console.log(getElementByXpath('//*[@id="2077:0"]/div/div[1]/div[2]/div/div/support-lwc-input-case-status/records-record-picklist/records-form-picklist/lightning-picklist/lightning-combobox/div'));
+    
+     */
+ 
+    </script>
+    <apex:form >
+        Status
+    <apex:inputField value="{!Case.Status}" onchange="getStatus(this);"/>
+    </apex:form>
+    
+
+</apex:page>
